@@ -41,11 +41,11 @@
             bottom: 10px;
             right: 15px;
             font-size: 1rem;
-            color: rgba(92, 42, 59, 0.3); /* Màu tối mờ nhẹ */
+            color: rgba(92, 42, 59, 0.3);
             font-family: 'Quicksand', sans-serif;
             font-weight: bold;
-            z-index: 9998; /* Nằm dưới intro nhưng trên nền */
-            pointer-events: none; /* Không chặn click */
+            z-index: 9998;
+            pointer-events: none;
             user-select: none;
         }
 
@@ -257,12 +257,12 @@
     <div class="web-watermark">By:Vinhdz</div>
 
     <audio id="bg-music" loop preload="auto">
-        <source src="nhacnen.mp3" type="audio/mpeg">
-       
+        <source src="https://data.chiasenhac.com/down/2265/2/2264104-51e4d081/128/I%20Do%20-%20911.mp3" type="audio/mpeg">
+        <source src="https://ia800501.us.archive.org/33/items/RiverFlowsInYou_201607/River%20Flows%20in%20You.mp3" type="audio/mpeg">
     </audio>
 
     <audio id="greeting-sound" preload="auto">
-        <source src="nhacchuc.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-marimba-chime-2811.mp3" type="audio/mpeg">
     </audio>
 
     <div class="music-wrapper">
@@ -379,7 +379,7 @@
                  <h3 style="color: var(--primary-color); font-family: 'Pacifico'; font-size: 1.5rem;">Bất ngờ cho bạn!</h3>
                  <p style="font-size: 1.1rem; color: #5c2a3b; margin-top: 5px;">Luôn tự tin, mạnh mẽ và làm chủ cuộc sống của mình.</p>
                  <div style="margin-top: 20px; font-size: 2rem;">🌹 🌷 🌻 🌸</div>
-                 <p style="font-size: 1rem; color: #555; font-style: italic; margin-top: 15px;">From: Một người hâm mộ bí mật 💖</p>
+                 <p id="vc-from-display" style="font-size: 1rem; color: #555; font-style: italic; margin-top: 15px;">From: Một người hâm mộ bí mật 💖</p>
             </div>
 
         </div>
@@ -505,7 +505,6 @@
             }, 500);
         }
 
-        // --- HÀM MỞ PHONG BÌ & XỬ LÝ ÂM THANH KÉP ---
         function openEnvelope() {
             document.getElementById('myEnvelope').classList.toggle('open');
             const rect = document.getElementById('myEnvelope').getBoundingClientRect();
@@ -515,15 +514,11 @@
             const bgMusic = document.getElementById('bg-music');
             const greetingSound = document.getElementById('greeting-sound');
 
-            // 1. Giảm âm lượng nhạc nền
             bgMusic.volume = 0.1; 
             
-            // 2. Phát nhạc chúc mừng
             greetingSound.play().catch(e => console.log("Không thể phát âm thanh chúc mừng: " + e));
 
-            // 3. Khi nhạc chúc mừng hết, tăng lại nhạc nền
             greetingSound.onended = function() {
-                // Tăng dần âm lượng cho mượt
                 let vol = 0.1;
                 let fadeInterval = setInterval(() => {
                     if (vol < 0.6) {
@@ -571,10 +566,21 @@
             }, 250);
         }
 
+        // --- CẬP NHẬT TÍNH NĂNG CHỤP THIỆP MỚI ---
         function captureCard() {
-            const name = currentUserName || "Người Phụ Nữ Tuyệt Vời";
-            document.getElementById('vc-name-display').innerText = name;
+            // 1. Cập nhật tên người nhận
+            const recipientName = currentUserName || "Người Phụ Nữ Tuyệt Vời";
+            document.getElementById('vc-name-display').innerText = recipientName;
             
+            // 2. Hỏi tên người gửi
+            let senderName = prompt("Nhập tên người gửi (Để trống nếu muốn giấu tên):");
+            if (senderName && senderName.trim() !== "") {
+                document.getElementById('vc-from-display').innerHTML = `From: ${senderName} 💖`;
+            } else {
+                document.getElementById('vc-from-display').innerHTML = `From: Một người hâm mộ bí mật 💖`;
+            }
+
+            // 3. Decor và Chụp
             const vc = document.getElementById('virtual-card');
             const oldHearts = vc.querySelectorAll('.static-heart');
             oldHearts.forEach(h => h.remove());
@@ -599,7 +605,7 @@
                 backgroundColor: null 
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `thiep-8-3-${name}.png`;
+                link.download = `thiep-8-3-${recipientName}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 alert("Đã lưu thiệp lung linh về máy! 💖");
